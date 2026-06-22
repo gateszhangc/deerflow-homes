@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeerFlow - Open-Source Super Agent Harness | Deep Exploration & Efficient Research Flow</title>
+<meta name="description" content="DeerFlow (Deep Exploration and Efficient Research Flow) is an open-source super agent harness that orchestrates sub-agents, memory, and sandboxes to do almost anything — powered by extensible skills.">
+<meta name="keywords" content="DeerFlow, super agent, AI agent, open source, ByteDance, sub-agents, sandbox, memory, skills, LangGraph, LangChain, autonomous AI, deep research, agent harness">
+<link rel="canonical" href="https://deerflow.tech/">
+<meta property="og:title" content="DeerFlow - Open-Source Super Agent Harness">
+<meta property="og:description" content="An open-source super agent harness that orchestrates sub-agents, memory, and sandboxes to do almost anything — powered by extensible skills.">
+<meta property="og:url" content="https://deerflow.tech/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DeerFlow - Open-Source Super Agent Harness">
+<meta name="twitter:description" content="An open-source super agent harness that orchestrates sub-agents, memory, and sandboxes to do almost anything — powered by extensible skills.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231a1a2e'/%3E%3Ctext x='50' y='68' font-size='55' text-anchor='middle' fill='%2363e2ff'%3E%F0%9F%A6%8C%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0b0b1a;color:#e0e0e0;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(11,11,26,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+nav .container{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;color:#fff}
+.nav-brand svg{width:28px;height:28px}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none;font-size:14px;font-weight:500}
+.nav-links a{color:rgba(255,255,255,.6);transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:8px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:600;font-size:13px;transition:opacity .2s}
+.nav-cta:hover{opacity:.9}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{width:24px;height:2px;background:#fff;border-radius:2px;transition:.3s}
+
+.hero{padding:140px 0 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 50% 50%,rgba(99,102,241,.08) 0%,transparent 50%);pointer-events:none}
+.hero .container{position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;font-size:13px;font-weight:500;margin-bottom:24px}
+.hero h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;color:#fff;margin-bottom:20px}
+.hero h1 span{background:linear-gradient(135deg,#63e2ff,#8b5cf6,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,.55);max-width:680px;margin:0 auto 36px}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:600;font-size:15px;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(99,102,241,.35)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:10px;background:rgba(255,255,255,.06);color:#fff;font-weight:600;font-size:15px;border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:background .2s}
+.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.hero-stats{display:flex;justify-content:center;gap:48px;margin-top:56px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-value{font-size:28px;font-weight:800;color:#fff}
+.hero-stat-label{font-size:13px;color:rgba(255,255,255,.4);margin-top:4px}
+
+section{padding:80px 0}
+.section-label{font-size:13px;font-weight:600;color:#8b5cf6;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.section-title{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;color:#fff;margin-bottom:16px}
+.section-sub{font-size:1rem;color:rgba(255,255,255,.5);max-width:600px;margin-bottom:48px}
+
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.overview-card{padding:32px;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.06);transition:transform .2s,border-color .2s}
+.overview-card:hover{transform:translateY(-4px);border-color:rgba(99,102,241,.25)}
+.overview-card-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.overview-card:nth-child(1) .overview-card-icon{background:rgba(99,102,241,.15)}
+.overview-card:nth-child(2) .overview-card-icon{background:rgba(139,92,246,.15)}
+.overview-card:nth-child(3) .overview-card-icon{background:rgba(244,114,182,.15)}
+.overview-card:nth-child(4) .overview-card-icon{background:rgba(99,226,255,.15)}
+.overview-card h3{font-size:17px;font-weight:600;color:#fff;margin-bottom:8px}
+.overview-card p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7}
+
+.how-it-works-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;counter-reset:step}
+.step{position:relative;padding:32px 24px;border-radius:16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);text-align:center}
+.step::before{counter-increment:step;content:'0' counter(step);position:absolute;top:16px;left:20px;font-size:32px;font-weight:800;color:rgba(99,102,241,.12);line-height:1}
+.step-icon{width:48px;height:48px;border-radius:100%;background:rgba(99,102,241,.12);display:flex;align-items:center;justify-content:center;font-size:20px;margin:0 auto 16px}
+.step h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px}
+.step p{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7}
+
+.features-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px}
+.feature-item{padding:28px;border-radius:14px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);transition:border-color .2s}
+.feature-item:hover{border-color:rgba(99,102,241,.2)}
+.feature-item h3{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.feature-item p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7}
+
+.cta-section{text-align:center;padding:100px 0;background:radial-gradient(ellipse at 50% 50%,rgba(99,102,241,.06) 0%,transparent 60%)}
+.cta-section h2{font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;color:#fff;margin-bottom:16px}
+.cta-section p{color:rgba(255,255,255,.5);max-width:520px;margin:0 auto 32px}
+
+.faq-grid{display:grid;gap:16px;max-width:800px;margin:0 auto}
+.faq-item{padding:24px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06)}
+.faq-item h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:6px}
+.faq-item p{font-size:14px;color:rgba(255,255,255,.5);line-height:1.7}
+
+footer{border-top:1px solid rgba(255,255,255,.06);padding:40px 0;text-align:center}
+footer .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+footer p{font-size:13px;color:rgba(255,255,255,.35)}
+.footer-links{display:flex;gap:20px;font-size:13px}
+.footer-links a{color:rgba(255,255,255,.4);transition:color .2s}
+.footer-links a:hover{color:#fff}
+
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:rgba(11,11,26,.98);backdrop-filter:blur(20px);z-index:99;padding:32px 24px;flex-direction:column;gap:24px}
+.mobile-menu a{font-size:18px;font-weight:500;color:rgba(255,255,255,.7)}
+.mobile-menu.open{display:flex}
+
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .hero{padding:120px 0 60px}
+  .hero-stats{gap:24px}
+  .hero-stat-value{font-size:22px}
+  section{padding:60px 0}
+  .features-list{grid-template-columns:1fr}
+  footer .container{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="nav-brand">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100" height="100" rx="22" fill="url(#logo-grad)"/>
+        <circle cx="50" cy="45" r="22" fill="#0b0b1a" opacity=".85"/>
+        <path d="M35 50 Q50 28 65 50 Q50 72 35 50Z" fill="#63e2ff" opacity=".6"/>
+        <path d="M38 50 Q50 32 62 50 Q50 68 38 50Z" fill="url(#logo-inner-grad)"/>
+        <circle cx="43" cy="46" r="3" fill="#fff"/>
+        <circle cx="57" cy="46" r="3" fill="#fff"/>
+        <defs>
+          <linearGradient id="logo-grad" x1="0" y1="0" x2="100" y2="100">
+            <stop stop-color="#6366f1"/>
+            <stop offset="1" stop-color="#8b5cf6"/>
+          </linearGradient>
+          <linearGradient id="logo-inner-grad" x1="0" y1="0" x2="100" y2="100">
+            <stop stop-color="#63e2ff"/>
+            <stop offset="1" stop-color="#a78bfa"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      DeerFlow
+    </a>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="https://mirofish.my/" class="nav-cta" target="_blank" rel="noopener noreferrer">
+      Get Started
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </a>
+    <button class="hamburger" onclick="document.getElementById('mobile-menu').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div id="mobile-menu" class="mobile-menu">
+  <a href="#overview" onclick="this.closest('.mobile-menu').classList.remove('open')">Overview</a>
+  <a href="#how-it-works" onclick="this.closest('.mobile-menu').classList.remove('open')">How It Works</a>
+  <a href="#features" onclick="this.closest('.mobile-menu').classList.remove('open')">Features</a>
+  <a href="#faq" onclick="this.closest('.mobile-menu').classList.remove('open')">FAQ</a>
+  <a href="https://mirofish.my/" target="_blank" rel="noopener noreferrer" style="margin-top:12px;display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-weight:600;font-size:15px;width:fit-content">Get Started</a>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span>#1 on GitHub Trending</span>
+    </div>
+    <h1>An open-source <span>super agent harness</span> for anything</h1>
+    <p>DeerFlow orchestrates sub-agents, memory, and sandboxes to do almost anything — powered by extensible skills. Built on LangGraph and LangChain.</p>
+    <div class="hero-buttons">
+      <a href="https://mirofish.my/" class="btn-primary" target="_blank" rel="noopener noreferrer">
+        Get Started
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </a>
+      <a href="https://github.com/bytedance/deer-flow" class="btn-secondary" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-value">72.8k</div>
+        <div class="hero-stat-label">GitHub Stars</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">2.0</div>
+        <div class="hero-stat-label">Latest Version</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-value">9.9k</div>
+        <div class="hero-stat-label">Forks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="container">
+    <div class="section-label">Overview</div>
+    <h2 class="section-title">From Deep Research to Super Agent Harness</h2>
+    <p class="section-sub">DeerFlow started as a Deep Research framework. The community ran with it — building data pipelines, generating slide decks, spinning up dashboards. So we rebuilt it from scratch.</p>
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="overview-card-icon">&#x1F9E0;</div>
+        <h3>Skills & Tools</h3>
+        <p>Skills are structured capability modules — Markdown files that define workflows, best practices, and resources. Loaded progressively, only when needed.</p>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-icon">&#x1F465;</div>
+        <h3>Sub-Agents</h3>
+        <p>The lead agent spawns sub-agents on the fly — each with scoped context, tools, and termination conditions. They run in parallel and report structured results.</p>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-icon">&#x1F4BB;</div>
+        <h3>Sandbox & File System</h3>
+        <p>Each task gets its own execution environment with a full filesystem view — skills, workspace, uploads, outputs. Shell execution runs inside isolated containers.</p>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-icon">&#x1F916;</div>
+        <h3>Long-Term Memory</h3>
+        <p>Across sessions, DeerFlow builds persistent memory of your profile, preferences, and accumulated knowledge. Memory is stored locally under your control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" style="background:rgba(255,255,255,.015)">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">One harness, many hands</h2>
+    <p class="section-sub">DeerFlow doesn't just talk about doing things. It has its own computer.</p>
+    <div class="how-it-works-steps">
+      <div class="step">
+        <div class="step-icon">&#x2699;&#xFE0F;</div>
+        <h3>Configure</h3>
+        <p>Run the setup wizard to choose an LLM provider, web search, and execution preferences. Generates config.yaml in about 2 minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">&#x1F680;</div>
+        <h3>Deploy</h3>
+        <p>Choose Docker (recommended) or local development. One command to start — sandbox, gateway, frontend, all wired up.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">&#x1F50D;</div>
+        <h3>Research</h3>
+        <p>Send tasks via web UI, IM channels (Telegram, Slack, Feishu, WeChat), or Claude Code. Fan out into sub-agents automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">&#x1F4CA;</div>
+        <h3>Deliver</h3>
+        <p>The lead agent synthesizes everything — reports, websites, slide decks, dashboards — into a coherent output.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="section-label">Core Features</div>
+    <h2 class="section-title">Batteries included, fully extensible</h2>
+    <p class="section-sub">DeerFlow 2.0 ships with everything an agent needs out of the box.</p>
+    <div class="features-list">
+      <div class="feature-item">
+        <h3><span>&#x1F9F0;</span> Skills & Tools</h3>
+        <p>Built-in skills for research, report generation, slide creation, web pages, image and video generation. Extend with custom skills via MCP servers or Python functions.</p>
+      </div>
+      <div class="feature-item">
+        <h3><span>&#x1F916;</span> Sub-Agents</h3>
+        <p>Decompose complex tasks into parallel sub-agents, each with isolated context and tools. The lead agent synthesizes everything into a coherent output.</p>
+      </div>
+      <div class="feature-item">
+        <h3><span>&#x1F4E6;</span> Sandbox Execution</h3>
+        <p>Local, Docker, or Kubernetes sandboxes. Isolated containers with full filesystem access — uploads, workspace, outputs.</p>
+      </div>
+      <div class="feature-item">
+        <h3><span>&#x1F4AC;</span> IM Channels</h3>
+        <p>Receive tasks from Telegram, Slack, Feishu, DingTalk, WeChat, and WeCom. No public IP needed — all channels auto-start.</p>
+      </div>
+      <div class="feature-item">
+        <h3><span>&#x1F9EE;</span> Context Engineering</h3>
+        <p>Aggressive summarization, isolated sub-agent contexts, strict tool-call recovery. Stays sharp across long multi-step tasks.</p>
+      </div>
+      <div class="feature-item">
+        <h3><span>&#x1F4C1;</span> Long-Term Memory</h3>
+        <p>Persistent memory across sessions. Your profile, preferences, and accumulated knowledge — stored locally, under your control.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label">Get Started</div>
+    <h2>Ready to run your own super agent?</h2>
+    <p>Clone the repo, run one command, and hand the harness your first task. Docker recommended — two minutes to a running instance.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="https://mirofish.my/" class="btn-primary" target="_blank" rel="noopener noreferrer">Get Started</a>
+      <a href="https://github.com/bytedance/deer-flow" class="btn-secondary" target="_blank" rel="noopener noreferrer">View the GitHub repo</a>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background:rgba(255,255,255,.015)">
+  <div class="container">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Common questions</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <h3>What is DeerFlow?</h3>
+        <p>DeerFlow is an open-source super agent harness — a runtime that gives agents the infrastructure to get work done. It orchestrates sub-agents, memory, and sandboxes to handle tasks that take minutes to hours.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Who created DeerFlow?</h3>
+        <p>DeerFlow is built by ByteDance and lives at github.com/bytedance/deer-flow. It claimed the #1 spot on GitHub Trending on February 28th, 2026.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What models does DeerFlow support?</h3>
+        <p>DeerFlow is model-agnostic and works with any LLM that implements the OpenAI-compatible API. It performs best with models supporting long context windows (100k+ tokens) and strong tool-use capabilities.</p>
+      </div>
+      <div class="faq-item">
+        <h3>What does "super agent harness" mean?</h3>
+        <p>DeerFlow is not a framework you wire together — it's a harness. Batteries included: filesystem, memory, skills, sandbox-aware execution, and the ability to plan and spawn sub-agents for complex multi-step tasks.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How do I deploy DeerFlow?</h3>
+        <p>Docker is the recommended deployment target. Run make up for production or make docker-start for development. The unified endpoint runs on port 2026.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Is DeerFlow secure for production use?</h3>
+        <p>DeerFlow is designed for local trusted environments. For production, use IP allowlists, authentication gateways, and network isolation. See the Security Notice in the repo for detailed recommendations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 DeerFlow. Open source under the MIT License.</p>
+    <div class="footer-links">
+      <a href="https://github.com/bytedance/deer-flow" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://deerflow.tech" target="_blank" rel="noopener noreferrer">Website</a>
+      <a href="https://github.com/bytedance/deer-flow/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
